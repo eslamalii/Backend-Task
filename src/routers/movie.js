@@ -1,10 +1,10 @@
-const express = require("express")
-const { findById } = require("../models/movie")
-const Movie = require("../models/movie")
+const express = require('express')
+const Movie = require('../models/movie')
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
 // Add a Movie
-router.post("/movie", async (req, res) => {
+router.post('/movie', auth, async (req, res) => {
   const movie = new Movie(req.body)
 
   try {
@@ -16,25 +16,25 @@ router.post("/movie", async (req, res) => {
 })
 
 // Get all movies
-router.get("/movie", async (req, res) => {
+router.get('/movie', auth, async (req, res) => {
   try {
     const movies = await Movie.find({})
     res.send(movies)
-  } catch (err) {
-    res.status(500).send(err)
+  } catch (e) {
+    res.status(500).send(e)
   }
 })
 
 // Update Movie By Id
-router.patch("/movie/:id", async (req, res) => {
+router.patch('/movie/:id', auth, async (req, res) => {
   const updates = Object.keys(req.body)
-  const allowedUpdates = ["title", "description", "rate", "image"]
+  const allowedUpdates = ['title', 'description', 'rate', 'image']
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   )
 
   if (!isValidOperation) {
-    return res.status(400).send({ error: "Invalid updates" })
+    return res.status(400).send({ error: 'Invalid updates' })
   }
 
   try {
@@ -49,13 +49,13 @@ router.patch("/movie/:id", async (req, res) => {
     }
 
     res.send(movie)
-  } catch (error) {
-    res.status(400).send(error)
+  } catch (e) {
+    res.status(400).send(e)
   }
 })
 
 // Delete Movie
-router.delete("/movie/:id", async (req, res) => {
+router.delete('/movie/:id', auth, async (req, res) => {
   try {
     const movie = await Movie.findByIdAndDelete(req.params.id)
 
@@ -64,8 +64,8 @@ router.delete("/movie/:id", async (req, res) => {
     }
 
     res.send(movie)
-  } catch (error) {
-    res.status(500).send(error)
+  } catch (e) {
+    res.status(500).send(e)
   }
 })
 
