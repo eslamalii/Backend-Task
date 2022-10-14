@@ -5,7 +5,12 @@ const router = new express.Router()
 
 // Add a Movie
 router.post('/movie', auth, async (req, res) => {
-  const movie = new Movie(req.body)
+  // const movie = new Movie(req.body)
+
+  const movie = new Movie({
+    ...req.body,
+    user: req.user._id,
+  })
 
   try {
     await movie.save()
@@ -17,9 +22,22 @@ router.post('/movie', auth, async (req, res) => {
 
 // Get all movies
 router.get('/movie', auth, async (req, res) => {
+  // const match = {}
+
+  // if (req.query.category) {
+  //   match.category = req.query.category === 'Drama'
+  // }
+
   try {
     const movies = await Movie.find({})
-    res.send(movies)
+      .populate({
+        path: 'user',
+        match: { category: { $ne: 'Drama' } },
+      })
+      .exec()
+
+    console.log(movies)
+    // res.send(movies)
   } catch (e) {
     res.status(500).send(e)
   }

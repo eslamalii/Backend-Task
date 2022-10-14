@@ -1,10 +1,10 @@
-const express = require("express")
+const express = require('express')
 const router = new express.Router()
-const auth = require("../middleware/auth")
-const User = require("../models/user")
+const auth = require('../middleware/auth')
+const User = require('../models/user')
 
 // Create User
-router.post("/user", async (req, res) => {
+router.post('/user', async (req, res) => {
   const user = new User(req.body)
 
   try {
@@ -17,7 +17,7 @@ router.post("/user", async (req, res) => {
 })
 
 // Login User
-router.post("/user/login", async (req, res) => {
+router.post('/user/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
     const token = await user.generateAuthToken()
@@ -27,7 +27,23 @@ router.post("/user/login", async (req, res) => {
   }
 })
 
-router.get("/user", auth, async (req, res) => {
+// Logout User
+router.post('/user/logout', auth, async (req, res) => {
+  try {
+    console.log(req.user.token)
+
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token
+    })
+    await req.user.save()
+
+    res.send()
+  } catch (e) {
+    res.status(400).send()
+  }
+})
+
+router.get('/user', auth, async (req, res) => {
   try {
     const users = await User.find({})
     res.send(users)
