@@ -22,22 +22,28 @@ router.post('/movie', auth, async (req, res) => {
 
 // Get all movies
 router.get('/movie', auth, async (req, res) => {
-  // const match = {}
+  const match = {}
 
-  // if (req.query.category) {
-  //   match.category = req.query.category === 'Drama'
-  // }
+  if (req.query.category) {
+    match.category = req.query.category
+  }
+
+  if (req.query.title) {
+    match.title = req.query.title
+  }
+
+  if (req.query.rate) {
+    match.rate = req.query.rate
+  }
 
   try {
-    const movies = await Movie.find({})
-      .populate({
-        path: 'user',
-        match: { category: { $ne: 'Drama' } },
-      })
-      .exec()
+    const movies = await Movie.find(match).populate('user')
 
-    console.log(movies)
-    // res.send(movies)
+    if (movies.length === 0) {
+      return res.status(404).send()
+    }
+
+    res.send(movies)
   } catch (e) {
     res.status(500).send(e)
   }
