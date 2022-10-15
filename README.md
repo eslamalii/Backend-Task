@@ -5,7 +5,6 @@
 ## The Packages I have used :
 
     bcryptjs
-    dotenv
     express
     jsonwebtoken
     mongodb
