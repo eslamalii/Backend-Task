@@ -5,7 +5,7 @@ const router = new express.Router()
 
 // Add a Movie
 router.post('/movie', auth, async (req, res) => {
-  // const movie = new Movie(req.body)
+  const movie = new Movie(req.body)
 
   const movie = new Movie({
     ...req.body,
