@@ -2,6 +2,7 @@ const express = require('express')
 const router = new express.Router()
 const auth = require('../middleware/auth')
 const User = require('../models/user')
+const CustomError = require('../utils/customError')
 
 // Create User
 router.post('/user', async (req, res) => {
@@ -12,7 +13,7 @@ router.post('/user', async (req, res) => {
     await user.save()
     res.status(201).send({ user, token })
   } catch (e) {
-    res.status(400).send(e)
+    throw new CustomError(e.message, 400)
   }
 })
 
@@ -48,7 +49,7 @@ router.get('/user', auth, async (req, res) => {
     const users = await User.find({})
     res.send(users)
   } catch (err) {
-    res.status(500).send(err)
+    throw new CustomError(err.message, 500)
   }
 })
 
