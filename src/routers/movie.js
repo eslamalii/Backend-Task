@@ -1,6 +1,7 @@
 const express = require('express')
 const Movie = require('../models/movie')
 const auth = require('../middleware/auth')
+const CustomError = require('../utils/customError')
 const router = new express.Router()
 
 // Add a Movie
