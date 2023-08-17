@@ -1,6 +1,7 @@
 const express = require('express')
 const Category = require('../models/category')
 const auth = require('../middleware/auth')
+const CustomError = require('../utils/customError')
 const router = new express.Router()
 
 // Add Category
